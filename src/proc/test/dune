@@ -1,10 +1,8 @@
-
-
-
 (test
-(name test)
-(libraries ounit2 proc))
+ (name test)
+ (libraries ounit proc))
 
 (env
-  (dev
-(flags (:standard -warn-error -A))))
+ (dev
+  (flags
+   (:standard -warn-error -A))))
