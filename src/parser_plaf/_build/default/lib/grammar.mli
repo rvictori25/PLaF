@@ -15,6 +15,7 @@ type token =
   | SEND
   | SEMICOLON
   | SELF
+  | RRANGLE
   | RPAREN
   | REFTYPE
   | RBRACE
@@ -32,12 +33,14 @@ type token =
   | METHOD
   | MAXL
   | LPAREN
+  | LLANGLE
   | LIST
   | LETREC
   | LET
   | LBRACE
   | LANGLE
   | ISZERO
+  | ISNUMBER
   | INTTYPE
   | INTERFACE
   | INT of (int)
@@ -50,6 +53,7 @@ type token =
   | FST
   | FIELD
   | EXTENDS
+  | EQUALSMUTABLE
   | EQUALS
   | EOF
   | END

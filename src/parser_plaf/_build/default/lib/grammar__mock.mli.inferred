@@ -12,6 +12,7 @@ type token =
   | SEND
   | SEMICOLON
   | SELF
+  | RRANGLE
   | RPAREN
   | REFTYPE
   | RBRACE
@@ -29,12 +30,14 @@ type token =
   | METHOD
   | MAXL
   | LPAREN
+  | LLANGLE
   | LIST
   | LETREC
   | LET
   | LBRACE
   | LANGLE
   | ISZERO
+  | ISNUMBER
   | INTTYPE
   | INTERFACE
   | INT of int
@@ -47,6 +50,7 @@ type token =
   | FST
   | FIELD
   | EXTENDS
+  | EQUALSMUTABLE
   | EQUALS
   | EOF
   | END
@@ -74,14 +78,15 @@ val xv_type_annotation : Ast.texpr
 val xv_texpr : Ast.texpr
 val xv_separated_nonempty_list_SEMICOLON_fieldtype_ :
   (string * Ast.texpr) list
-val xv_separated_nonempty_list_SEMICOLON_field_ : (string * Ast.expr) list
+val xv_separated_nonempty_list_SEMICOLON_field_ :
+  (string * (bool * Ast.expr)) list
 val xv_separated_nonempty_list_SEMICOLON_expr_ : Ast.expr list
 val xv_separated_nonempty_list_COMMA_formal_par_ :
   (string * Ast.texpr option) list
 val xv_separated_nonempty_list_COMMA_expr_ : Ast.expr list
 val xv_separated_nonempty_list_COMMA_ID_ : string list
 val xv_separated_list_SEMICOLON_fieldtype_ : (string * Ast.texpr) list
-val xv_separated_list_SEMICOLON_field_ : (string * Ast.expr) list
+val xv_separated_list_SEMICOLON_field_ : (string * (bool * Ast.expr)) list
 val xv_separated_list_SEMICOLON_expr_ : Ast.expr list
 val xv_separated_list_COMMA_formal_par_ : (string * Ast.texpr option) list
 val xv_separated_list_COMMA_expr_ : Ast.expr list
@@ -97,7 +102,7 @@ val xv_method_decl : Ast.mdecl
 val xv_loption_separated_nonempty_list_SEMICOLON_fieldtype__ :
   (string * Ast.texpr) list
 val xv_loption_separated_nonempty_list_SEMICOLON_field__ :
-  (string * Ast.expr) list
+  (string * (bool * Ast.expr)) list
 val xv_loption_separated_nonempty_list_SEMICOLON_expr__ : Ast.expr list
 val xv_loption_separated_nonempty_list_COMMA_formal_par__ :
   (string * Ast.texpr option) list
@@ -111,7 +116,7 @@ val xv_implements_declaration : string
 val xv_iface_or_class_decl : Ast.cdecl
 val xv_formal_par : string * Ast.texpr option
 val xv_fieldtype : string * Ast.texpr
-val xv_field : string * Ast.expr
+val xv_field : string * (bool * Ast.expr)
 val xv_expr : Ast.expr
 val xv_abstract_method_decl : Ast.abs_mdecl
 val menhir_end_marker : int

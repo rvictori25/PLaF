@@ -21,6 +21,7 @@
 %token END
 %token EOF
 %token EQUALS
+%token EQUALSMUTABLE
 %token EXTENDS
 %token FIELD
 %token FST
@@ -33,12 +34,14 @@
 %token <int> INT
 %token INTERFACE
 %token INTTYPE
+%token ISNUMBER
 %token ISZERO
 %token LANGLE
 %token LBRACE
 %token LET
 %token LETREC
 %token LIST
+%token LLANGLE
 %token LPAREN
 %token MAXL
 %token METHOD
@@ -56,6 +59,7 @@
 %token RBRACE
 %token REFTYPE
 %token RPAREN
+%token RRANGLE
 %token SELF
 %token SEMICOLON
 %token SEND
@@ -69,9 +73,9 @@
 %token TL
 %token UNITTYPE
 %token UNPAIR
-%nonassoc ELSE EQUALS IN
+%nonassoc ELSE EQUALS EQUALSMUTABLE IN
 %right ARROW
-%left MINUS PLUS
+%left LLANGLE MINUS PLUS RRANGLE
 %left DIVIDED TIMES
 %left DOT
 %nonassoc REFTYPE
@@ -239,6 +243,14 @@ expr:
     {}
 | ISZERO LPAREN expr RPAREN
     {}
+| ISNUMBER LPAREN expr RPAREN
+    {}
+| expr EQUALS expr
+    {}
+| expr RRANGLE expr
+    {}
+| expr LLANGLE expr
+    {}
 | NEWREF LPAREN expr RPAREN
     {}
 | DEREF LPAREN expr RPAREN
@@ -275,6 +287,8 @@ expr:
     {}
 | expr DOT ID
     {}
+| expr DOT ID EQUALSMUTABLE expr
+    {}
 | NEW ID LPAREN loption_separated_nonempty_list_COMMA_expr__ RPAREN
     {}
 | SELF
@@ -310,6 +324,8 @@ type_annotation:
 
 field:
   ID EQUALS expr
+    {}
+| ID EQUALSMUTABLE expr
     {}
 
 fieldtype:
