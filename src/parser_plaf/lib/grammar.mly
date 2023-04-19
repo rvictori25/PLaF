@@ -70,7 +70,7 @@ open Ast
 %token SELF
 %token FIELD
 %token NEW
-%token LIST
+%token MKLIST
 %token CONS 
 %token HD 
 %token TL
@@ -85,16 +85,18 @@ open Ast
 %token BOOLTYPE "bool"
 %token UNITTYPE "unit"
 %token REFTYPE "ref"
+%token TREETYPE "tree"
+%token LISTTYPE "list"
 %token EOF
 
 (* Precedence and associativity *)
 
-%nonassoc IN ELSE EQUALS EQUALSMUTABLE /* lowest precedence */
+%nonassoc IN ELSE EQUALS EQUALSMUTABLE  /* lowest precedence */
 %right ARROW
 %left PLUS MINUS LLANGLE RRANGLE  
 %left TIMES DIVIDED 
-%left DOT    
-%nonassoc REFTYPE                      /* highest precedence */
+%left DOT    /* highest precedence */
+%nonassoc REFTYPE LISTTYPE TREETYPE
                           (*%nonassoc UMINUS        /* highest precedence */*)
 
 
@@ -160,9 +162,9 @@ expr:
 | LANGLE; es = separated_list(COMMA, expr) ; RANGLE { Tuple(es) }
 | LET; LANGLE; is = separated_list(COMMA, ID) ;RANGLE; EQUALS; e1 = expr; IN;
   e2 = expr { Untuple(is,e1,e2) }
-| EMPTYTREE { EmptyTree }
+| EMPTYTREE; LPAREN; t = option(texpr); RPAREN { EmptyTree(t) }
 | NODE; LPAREN; e1 = expr; COMMA; e2=expr; COMMA; e3=expr; RPAREN { Node(e1,e2,e3) }
-| CASET; e1 = expr; OF; LBRACE; EMPTYTREE; ARROW; e2=expr; COMMA;
+| CASET; e1 = expr; OF; LBRACE; EMPTYTREE; LPAREN; RPAREN; ARROW; e2=expr; COMMA;
       NODE; LPAREN; id1 = ID; COMMA; id2=ID; COMMA; id3=ID; RPAREN;
       ARROW;  e3=expr; RBRACE { CaseT(e1,e2,id1,id2,id3,e3) }
 | LBRACE; fs = separated_list(SEMICOLON, field); RBRACE { Record(fs) }
@@ -175,8 +177,8 @@ expr:
   RPAREN { Send(e,id,args) }
 | SUPER; id=ID; LPAREN; args = separated_list(COMMA, expr);
   RPAREN { Super(id,args) }
-| LIST; LPAREN; es= separated_list(COMMA, expr); RPAREN { List(es)}
-| EMPTYLIST { EmptyList }
+| MKLIST; LPAREN; es= separated_list(COMMA, expr); RPAREN { List(es)}
+| EMPTYLIST; LPAREN; t = option(texpr); RPAREN { EmptyList(t) }
 | HD; LPAREN; e = expr; RPAREN { Hd(e) }
 | TL; LPAREN; e = expr; RPAREN { Tl(e) }
 | EMPTYPRED; LPAREN; e = expr; RPAREN { IsEmpty(e) }
@@ -193,8 +195,8 @@ type_annotation:
 | COLON; t=texpr { t } 
 
 field:
-    | id = ID; EQUALS; e=expr { (id,(false,e)) }
-    | id = ID; EQUALSMUTABLE; e=expr { (id,(true,e)) }
+| id = ID; EQUALS; e=expr { (id,(false,e)) }
+| id = ID; EQUALSMUTABLE; e=expr { (id,(true,e)) }
     
 fieldtype:
 | id = ID; COLON; t=texpr { (id,t) }
@@ -239,6 +241,8 @@ texpr:
 | t1 = texpr; TIMES; t2 = texpr { PairType(t1,t2) }
 | LPAREN; t1 = texpr; RPAREN { t1 }
 | "ref"; t1 = texpr { RefType(t1) }
+| "tree"; t1 = texpr { TreeType(t1) }
+| "list"; t1 = texpr { ListType(t1) }
 | LBRACE; ts = separated_list(SEMICOLON, fieldtype); RBRACE { RecordType(ts) }
      
 
